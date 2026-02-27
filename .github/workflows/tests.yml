@@ -116,19 +116,27 @@ jobs:
             -- NUnit.NumberOfTestWorkers="$THREADS" \
             --logger "trx;LogFileName=test_results.trx"
 
+      - name: Debug Allure results
+        shell: bash
+        run: |
+          echo "== allure-results directories =="
+          find . -type d -name "allure-results" -print || true
+
+          echo "== allure result files =="
+          find . -type f \( -name "*-result.json" -o -name "*-container.json" \) -print || true
+
+          echo "== bin folders =="
+          find . -maxdepth 4 -type d -path "*bin/Release*" -print || true            
       - name: Install Allure CLI
         run: |
           npm i -g allure-commandline --save-dev
 
       - name: Generate Allure report
         run: |
-          mkdir -p allure-results
-          # Collect results from both projects
-          find . -type d -name allure-results -print -exec cp -r {}/. ./allure-results/ \;
-          allure generate ./allure-results -o ./allure-report --clean
+          allure generate --output ./allure-report "./**/allure-results"
 
       - name: Upload Allure report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: allure-report
           path: allure-report
