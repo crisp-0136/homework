@@ -20,11 +20,11 @@ public sealed class LoginPage : BasePage
     {
         await Email.FillAsync(email);
         await Password.FillAsync(password);
-        
+
         await Task.WhenAll(
         Page.WaitForLoadStateAsync(LoadState.NetworkIdle),
         Submit.ClickAsync()
-     );
+        );
     }
 
     public async Task<bool> HasInvalidCredentialsErrorAsync()
@@ -32,5 +32,3 @@ public sealed class LoginPage : BasePage
     public async Task<bool> HasInlineErrorAsync()
         => (await EmailError.IsVisibleAsync()) || (await PasswordError.IsVisibleAsync());
 }
-
-    

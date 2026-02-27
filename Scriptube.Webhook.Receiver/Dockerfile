@@ -6,8 +6,7 @@ ENV ASPNETCORE_URLS=http://+:8080
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 COPY . .
-WORKDIR /src/Scriptube.Webhook.Receiver
-RUN dotnet publish -c Release -o /out
+RUN dotnet publish ./Scriptube.Webhook.Receiver/Scriptube.Webhook.Receiver.csproj -c Release -o /out
 
 FROM base AS final
 WORKDIR /app

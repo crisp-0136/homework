@@ -42,5 +42,5 @@ public sealed class ScriptubeApiClient
 
     public Task<HttpResponseMessage> DeleteBatchItemAsync(string batchId, string itemId, CancellationToken ct = default)
     => _http.DeleteAsync($"/api/batches/{batchId}/items/{itemId}", ct);
-            
+
 }

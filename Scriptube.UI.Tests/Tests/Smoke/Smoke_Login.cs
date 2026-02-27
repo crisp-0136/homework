@@ -10,7 +10,7 @@ namespace Scriptube.UI.Tests.Tests.Smoke;
 [Category("Smoke")]
 public sealed class Smoke_Login : BaseUiTest
 {
-   [Test]
+    [Test]
     public async Task Login_should_load_dashboard()
     {
         Settings.Auth.Email.Should().NotBeNullOrWhiteSpace();
