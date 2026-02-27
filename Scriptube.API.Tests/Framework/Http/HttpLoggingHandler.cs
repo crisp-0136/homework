@@ -14,57 +14,90 @@ public sealed class HttpLoggingHandler : DelegatingHandler
         _apiKeyHeaderName = apiKeyHeaderName;
     }
 
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
     {
-        _log(await FormatRequest(request));
+        var sw = System.Diagnostics.Stopwatch.StartNew();
 
-        var response = await base.SendAsync(request, ct);
+        try
+        {
+            _log(await FormatRequestSafe(request));
 
-        _log(await FormatResponse(response));
-        return response;
+            var response = await base.SendAsync(request, ct);
+
+            _log(await FormatResponseSafe(response));
+            _log($"<-- END ({(int)response.StatusCode}) in {sw.ElapsedMilliseconds}ms");
+
+            return response;
+        }
+        catch (TaskCanceledException) when (!ct.IsCancellationRequested)
+        {
+            _log($"<-- TIMEOUT {request.Method} {request.RequestUri} after {sw.ElapsedMilliseconds}ms");
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _log($"<-- ERROR {request.Method} {request.RequestUri} after {sw.ElapsedMilliseconds}ms: {ex.GetType().Name}: {ex.Message}");
+            throw;
+        }
     }
 
-    private async Task<string> FormatRequest(HttpRequestMessage req)
+    private static async Task<string> FormatRequestSafe(HttpRequestMessage request)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($"--> {req.Method} {req.RequestUri}");
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($">> {request.Method} {request.RequestUri}");
 
-        foreach (var h in req.Headers)
-            sb.AppendLine($"{h.Key}: {MaskHeader(h.Key, string.Join(", ", h.Value))}");
+        foreach (var h in request.Headers)
+            sb.AppendLine($"{h.Key}: {string.Join(",", h.Value)}");
 
-        if (req.Content is not null)
+        if (request.Content is not null)
         {
-            foreach (var h in req.Content.Headers)
-                sb.AppendLine($"{h.Key}: {string.Join(", ", h.Value)}");
+            foreach (var h in request.Content.Headers)
+                sb.AppendLine($"{h.Key}: {string.Join(",", h.Value)}");
 
-            var body = await req.Content.ReadAsStringAsync();
-            if (!string.IsNullOrWhiteSpace(body))
-                sb.AppendLine(body);
+            // Read without permanently consuming: buffer then restore
+            var bytes = await request.Content.ReadAsByteArrayAsync();
+            var body = System.Text.Encoding.UTF8.GetString(bytes);
+
+            sb.AppendLine();
+            sb.AppendLine(body);
+
+            var newContent = new ByteArrayContent(bytes);
+            foreach (var h in request.Content.Headers)
+                newContent.Headers.TryAddWithoutValidation(h.Key, h.Value);
+
+            request.Content = newContent;
         }
 
-        sb.AppendLine("--> END");
+        sb.AppendLine(">> END");
         return sb.ToString();
     }
 
-    private async Task<string> FormatResponse(HttpResponseMessage res)
+    private static async Task<string> FormatResponseSafe(HttpResponseMessage response)
     {
-        var sb = new StringBuilder();
-        sb.AppendLine($"<-- {(int)res.StatusCode} {res.ReasonPhrase}");
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"<-- {(int)response.StatusCode} {response.ReasonPhrase}");
 
-        foreach (var h in res.Headers)
-            sb.AppendLine($"{h.Key}: {string.Join(", ", h.Value)}");
+        foreach (var h in response.Headers)
+            sb.AppendLine($"{h.Key}: {string.Join(",", h.Value)}");
 
-        if (res.Content is not null)
+        if (response.Content is not null)
         {
-            foreach (var h in res.Content.Headers)
-                sb.AppendLine($"{h.Key}: {string.Join(", ", h.Value)}");
+            foreach (var h in response.Content.Headers)
+                sb.AppendLine($"{h.Key}: {string.Join(",", h.Value)}");
 
-            var body = await res.Content.ReadAsStringAsync();
-            if (!string.IsNullOrWhiteSpace(body))
-                sb.AppendLine(body);
+            var bytes = await response.Content.ReadAsByteArrayAsync();
+            var body = System.Text.Encoding.UTF8.GetString(bytes);
+
+            sb.AppendLine();
+            sb.AppendLine(body);
+
+            var newContent = new ByteArrayContent(bytes);
+            foreach (var h in response.Content.Headers)
+                newContent.Headers.TryAddWithoutValidation(h.Key, h.Value);
+
+            response.Content = newContent;
         }
 
-        sb.AppendLine("<-- END");
         return sb.ToString();
     }
 

@@ -3,10 +3,11 @@ using NUnit.Framework;
 using Scriptube.API.Tests.Framework.Http;
 using Scriptube.API.Tests.Framework.Models;
 using System.Text.Json;
-
+using Allure.NUnit;
 namespace Scriptube.API.Tests.Tests.Smoke;
 
 [TestFixture]
+[AllureNUnit]
 [Category("API")]
 [Category("Smoke")]
 public sealed class Smoke_E2E_Submit_Poll_Export : BaseApiTest

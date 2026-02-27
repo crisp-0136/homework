@@ -1,10 +1,11 @@
 using FluentAssertions;
 using NUnit.Framework;
 using Scriptube.API.Tests.Framework.Http;
-
+using Allure.NUnit;
 namespace Scriptube.API.Tests.Tests.Regression;
 
 [TestFixture]
+[AllureNUnit]
 [Category("API")]
 [Category("Regression")]
 [Ignore("Delete concrete item or batch not available in current OpenAPI contract")]
