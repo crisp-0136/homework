@@ -115,11 +115,13 @@ jobs:
             --configuration Release \
             --filter "$FILTER" \
             -- NUnit.NumberOfTestWorkers="$THREADS" \
-            --logger "trx;LogFileName=test_results.trx"
+            --logger "trx;LogFileName=test_results.trx"\
+            --logger "console;verbosity=detailed"
 
       - name: Debug Allure results
         shell: bash
         run: |
+          echo "ALLURE_CONFIG=$ALLURE_CONFIG"
           echo "== allure-results directories =="
           find . -type d -name "allure-results" -print || true
 
@@ -131,12 +133,14 @@ jobs:
           ls -la
           ls -la allure-results || true
           find allure-results -type f -maxdepth 1 -print || true
+
       - name: Install Allure CLI
         run: |
           npm i -g allure-commandline --save-dev
 
       - name: Generate Allure report
         run: |
+          npm i -g allure-commandline 
           allure generate --output ./allure-report "./**/allure-results"
 
       - name: Upload Allure report artifact
