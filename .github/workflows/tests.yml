@@ -10,11 +10,11 @@ on:
         type: choice
         options: [api, ui, webhook, all]
       suite:
-        description: smoke | regression
+        description: Smoke | Regression
         required: true
-        default: smoke
+        default: Smoke
         type: choice
-        options: [smoke, regression]
+        options: [Smoke, Regression]
       threads:
         description: parallel threads
         required: true
