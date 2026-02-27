@@ -1,0 +1,146 @@
+name: tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      area:
+        description: api | ui | webhook | all
+        required: true
+        default: all
+        type: choice
+        options: [api, ui, webhook, all]
+      suite:
+        description: smoke | regression
+        required: true
+        default: smoke
+        type: choice
+        options: [smoke, regression]
+      threads:
+        description: parallel threads
+        required: true
+        default: "2"
+  push:
+    branches: [ "main" ]
+  pull_request:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: 1
+      # Secrets (API + Webhook)
+      SCRIPTUBE_Secrets__ApiKey: ${{ secrets.SCRIPTUBE_API_KEY }}
+      SCRIPTUBE_Webhooks__ReceiverUrl: ${{ secrets.SCRIPTUBE_WEBHOOK_RECEIVER_URL }}
+      SCRIPTUBE_Webhooks__SharedSecret: ${{ secrets.SCRIPTUBE_WEBHOOK_SHARED_SECRET }}
+      SCRIPTUBE_Webhooks__ReceiverAdminToken: ${{ secrets.SCRIPTUBE_WEBHOOK_RECEIVER_ADMIN_TOKEN }}
+      # UI creds (optional)
+      SCRIPTUBE_Auth__Email: ${{ secrets.SCRIPTUBE_UI_EMAIL }}
+      SCRIPTUBE_Auth__Password: ${{ secrets.SCRIPTUBE_UI_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+
+      - name: Install Playwright browsers (Chromium only)
+        run: |
+          dotnet build
+          cd Scriptube.UI.Tests
+          pwsh ./bin/Debug/net9.0/playwright.ps1 install chromium
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Format check
+        run: dotnet format --verify-no-changes
+
+      - name: Build (warnings as errors)
+        run: dotnet build -warnaserror
+
+      - name: Decide filters
+        id: filters
+        shell: bash
+        run: |
+          AREA="${{ github.event.inputs.area }}"
+          SUITE="${{ github.event.inputs.suite }}"
+          THREADS="${{ github.event.inputs.threads }}"
+
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            AREA="all"
+            SUITE="smoke"
+            THREADS="2"
+          fi
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            AREA="all"
+            SUITE="regression"
+            THREADS="2"
+          fi
+
+          echo "area=$AREA" >> $GITHUB_OUTPUT
+          echo "suite=$SUITE" >> $GITHUB_OUTPUT
+          echo "threads=$THREADS" >> $GITHUB_OUTPUT
+
+      - name: Run tests
+        shell: bash
+        run: |
+          AREA="${{ steps.filters.outputs.area }}"
+          SUITE="${{ steps.filters.outputs.suite }}"
+          THREADS="${{ steps.filters.outputs.threads }}"
+
+          if [[ "$AREA" == "all" ]]; then
+            FILTER="TestCategory=$SUITE"
+          else
+            # Area + suite
+            FILTER="TestCategory=$(echo $AREA | tr '[:lower:]' '[:upper:]' | sed 's/./\L&/')&TestCategory=$SUITE"
+            # NUnit categories are case-sensitive in filtering across runners; enforce exact usage below:
+            # We used "API"/"UI"/"Webhook" and "Smoke"/"Regression"
+            if [[ "$AREA" == "api" ]]; then FILTER="TestCategory=API&TestCategory=$SUITE"; fi
+            if [[ "$AREA" == "ui" ]]; then FILTER="TestCategory=UI&TestCategory=$SUITE"; fi
+            if [[ "$AREA" == "webhook" ]]; then FILTER="TestCategory=Webhook&TestCategory=$SUITE"; fi
+          fi
+
+          dotnet test \
+            --configuration Release \
+            --filter "$FILTER" \
+            -- NUnit.NumberOfTestWorkers="$THREADS" \
+            --logger "trx;LogFileName=test_results.trx"
+
+      - name: Install Allure CLI
+        run: |
+          npm i -g allure-commandline --save-dev
+
+      - name: Generate Allure report
+        run: |
+          mkdir -p allure-results
+          # Collect results from both projects
+          find . -type d -name allure-results -print -exec cp -r {}/. ./allure-results/ \;
+          allure generate ./allure-results -o ./allure-report --clean
+
+      - name: Upload Allure report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
