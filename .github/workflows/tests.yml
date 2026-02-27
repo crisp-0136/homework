@@ -130,9 +130,6 @@ jobs:
 
           echo "== bin folders =="
           find . -maxdepth 4 -type d -path "*bin/Release*" -print || true
-          ls -la
-          ls -la allure-results || true
-          find allure-results -type f -maxdepth 1 -print || true
 
       - name: Install Allure CLI
         run: |
@@ -141,7 +138,10 @@ jobs:
       - name: Generate Allure report
         run: |
           npm i -g allure-commandline 
-          allure generate --output ./allure-report "./**/allure-results"
+          shopt -s globstar nullglob
+          RESULTS=(**/allure-results)
+          printf "Found results:\n%s\n" "${RESULTS[@]}"
+          allure generate --output ./allure-report "${RESULTS[@]}"
 
       - name: Upload Allure report artifact
         uses: actions/upload-artifact@v4
