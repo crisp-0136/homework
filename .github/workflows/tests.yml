@@ -78,13 +78,13 @@ jobs:
 
           if [[ "${{ github.event_name }}" == "push" ]]; then
             AREA="all"
-            SUITE="smoke"
+            SUITE="Smoke"
             THREADS="2"
           fi
 
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             AREA="all"
-            SUITE="regression"
+            SUITE="Regression"
             THREADS="2"
           fi
 
