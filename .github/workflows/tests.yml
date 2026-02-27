@@ -43,6 +43,7 @@ jobs:
       # UI creds (optional)
       SCRIPTUBE_Auth__Email: ${{ secrets.SCRIPTUBE_UI_EMAIL }}
       SCRIPTUBE_Auth__Password: ${{ secrets.SCRIPTUBE_UI_PASSWORD }}
+      ALLURE_CONFIG: ${{ github.workspace }}/allureConfig.json
 
     steps:
       - uses: actions/checkout@v4
@@ -126,7 +127,10 @@ jobs:
           find . -type f \( -name "*-result.json" -o -name "*-container.json" \) -print || true
 
           echo "== bin folders =="
-          find . -maxdepth 4 -type d -path "*bin/Release*" -print || true            
+          find . -maxdepth 4 -type d -path "*bin/Release*" -print || true
+          ls -la
+          ls -la allure-results || true
+          find allure-results -type f -maxdepth 1 -print || true
       - name: Install Allure CLI
         run: |
           npm i -g allure-commandline --save-dev
