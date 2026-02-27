@@ -14,7 +14,7 @@ public sealed class HttpLoggingHandler : DelegatingHandler
         _apiKeyHeaderName = apiKeyHeaderName;
     }
 
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
     {
         var sw = System.Diagnostics.Stopwatch.StartNew();
 
