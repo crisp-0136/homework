@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scriptube.UI.Tests", "Scrip
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scriptube.Webhook.Receiver", "Scriptube.Webhook.Receiver\Scriptube.Webhook.Receiver.csproj", "{5FE240C3-6964-4DEC-8F12-358FD6EE9C32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scriptube.Webhook.Tests", "Scriptube.Webhook.Tests\Scriptube.Webhook.Tests.csproj", "{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{5FE240C3-6964-4DEC-8F12-358FD6EE9C32}.Release|x64.Build.0 = Release|Any CPU
 		{5FE240C3-6964-4DEC-8F12-358FD6EE9C32}.Release|x86.ActiveCfg = Release|Any CPU
 		{5FE240C3-6964-4DEC-8F12-358FD6EE9C32}.Release|x86.Build.0 = Release|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Debug|x64.Build.0 = Debug|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Debug|x86.Build.0 = Debug|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Release|x64.ActiveCfg = Release|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Release|x64.Build.0 = Release|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Release|x86.ActiveCfg = Release|Any CPU
+		{A4601A9F-EC62-449B-A5E3-A48C45FDBFAA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

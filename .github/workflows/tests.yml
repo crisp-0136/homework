@@ -35,14 +35,23 @@ jobs:
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_NOLOGO: 1
-      # Secrets (API + Webhook)
+      # TestConfiguration.Scriptube => sections: Api + Secrets
       SCRIPTUBE_Secrets__ApiKey: ${{ secrets.SCRIPTUBE_API_KEY }}
-      SCRIPTUBE_Webhooks__ReceiverUrl: ${{ secrets.SCRIPTUBE_WEBHOOK_RECEIVER_URL }}
-      SCRIPTUBE_Webhooks__SharedSecret: ${{ secrets.SCRIPTUBE_WEBHOOK_SHARED_SECRET }}
-      SCRIPTUBE_Webhooks__ReceiverAdminToken: ${{ secrets.SCRIPTUBE_WEBHOOK_RECEIVER_ADMIN_TOKEN }}
+
+      # TestConfiguration.Webhook => section: Receiver
+      SCRIPTUBE_Receiver__BaseUrl: ${{ secrets.SCRIPTUBE_WEBHOOK_RECEIVER_URL }}
+      SCRIPTUBE_Receiver__AdminToken: ${{ secrets.SCRIPTUBE_WEBHOOK_RECEIVER_ADMIN_TOKEN }}
+      SCRIPTUBE_Receiver__SharedSecret: ${{ secrets.SCRIPTUBE_WEBHOOK_SHARED_SECRET }}
+
       # UI creds (optional)
       SCRIPTUBE_Auth__Email: ${{ secrets.SCRIPTUBE_UI_EMAIL }}
       SCRIPTUBE_Auth__Password: ${{ secrets.SCRIPTUBE_UI_PASSWORD }}
+
+      # keep old names too (safe), until you delete them everywhere
+      SCRIPTUBE_Webhooks__ReceiverUrl: ${{ secrets.SCRIPTUBE_WEBHOOK_RECEIVER_URL }}
+      SCRIPTUBE_Webhooks__ReceiverAdminToken: ${{ secrets.SCRIPTUBE_WEBHOOK_RECEIVER_ADMIN_TOKEN }}
+      SCRIPTUBE_Webhooks__SharedSecret: ${{ secrets.SCRIPTUBE_WEBHOOK_SHARED_SECRET }}
+
       ALLURE_CONFIG: ${{ github.workspace }}/allureConfig.json
 
     steps:
