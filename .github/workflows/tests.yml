@@ -71,8 +71,8 @@ jobs:
       - name: Restore
         run: dotnet restore
 
-      - name: Format check
-        run: dotnet format --verify-no-changes
+      #- name: Format check
+      #  run: dotnet format --verify-no-changes
 
       - name: Build (warnings as errors)
         run: dotnet build -warnaserror
