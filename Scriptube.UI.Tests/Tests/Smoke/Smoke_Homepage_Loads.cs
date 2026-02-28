@@ -1,6 +1,9 @@
 using FluentAssertions;
+
 using NUnit.Framework;
+
 using Scriptube.UI.Tests.Framework.Browser;
+
 using Allure.NUnit;
 namespace Scriptube.UI.Tests.Tests.Smoke;
 

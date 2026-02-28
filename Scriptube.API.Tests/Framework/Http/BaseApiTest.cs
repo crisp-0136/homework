@@ -1,4 +1,5 @@
 using NUnit.Framework;
+
 using Scriptube.API.Tests.Framework.Config;
 
 namespace Scriptube.API.Tests.Framework.Http;

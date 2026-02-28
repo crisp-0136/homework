@@ -1,5 +1,7 @@
 using FluentAssertions;
+
 using System.Text.Json;
+
 using Scriptube.Webhook.Tests.Models;
 
 namespace Scriptube.Webhook.Tests.Assertions;
@@ -19,10 +21,10 @@ public static class WebhookPayloadAsserts
 
     public static void MustHaveCoreFields(ReceivedWebhook payload)
     {
-    payload.EffectiveType.Should().NotBeNullOrWhiteSpace();
+        payload.EffectiveType.Should().NotBeNullOrWhiteSpace();
     }
     public static void MustHaveBatchId(ReceivedWebhook payload)
     {
-    payload.BatchId.Should().NotBeNullOrWhiteSpace("payload must include batch id");
+        payload.BatchId.Should().NotBeNullOrWhiteSpace("payload must include batch id");
     }
 }

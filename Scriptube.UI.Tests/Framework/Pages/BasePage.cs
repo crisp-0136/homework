@@ -1,4 +1,5 @@
 using Microsoft.Playwright;
+
 using Scriptube.UI.Tests.Framework.Config;
 
 namespace Scriptube.UI.Tests.Framework.Pages;

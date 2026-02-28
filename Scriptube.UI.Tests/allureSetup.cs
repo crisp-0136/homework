@@ -1,4 +1,5 @@
 using Allure.NUnit;
+
 using NUnit.Framework;
 
 namespace Scriptube.UI.Tests;

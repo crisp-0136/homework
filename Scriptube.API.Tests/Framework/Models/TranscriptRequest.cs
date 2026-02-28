@@ -7,4 +7,3 @@ public sealed record TranscriptRequest
     public bool Use_Byok { get; init; } = false;
     public bool Translate_To_English { get; init; } = false;
 }
-

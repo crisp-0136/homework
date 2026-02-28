@@ -1,8 +1,12 @@
 using FluentAssertions;
+
 using NUnit.Framework;
+
 using Scriptube.API.Tests.Framework.Http;
 using Scriptube.API.Tests.Framework.Models;
+
 using System.Text.Json;
+
 using Allure.NUnit;
 namespace Scriptube.API.Tests.Tests.Smoke;
 

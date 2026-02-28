@@ -1,4 +1,5 @@
 using NUnit.Framework;
+
 using Scriptube.Webhook.Tests.Builders;
 using Scriptube.Webhook.Tests.Clients;
 using Scriptube.Webhook.Tests.TestBase;
@@ -21,30 +22,30 @@ public sealed class WebhookRegistrationFixture
 
     public async Task RegisterAsync(string receiverHookUrl, string? secret = null, List<string>? events = null)
     {
-    var s = secret;
-    if (string.IsNullOrWhiteSpace(s) || s.Length < 16)
-        s = "test-secret-000000"; // 16+ chars
+        var s = secret;
+        if (string.IsNullOrWhiteSpace(s) || s.Length < 16)
+            s = "test-secret-000000"; // 16+ chars
 
-    var ev = events;
-    if (ev == null || ev.Count == 0)
-        ev = new List<string> { "batch.completed" }; // adjust to actual name once confirmed
+        var ev = events;
+        if (ev == null || ev.Count == 0)
+            ev = new List<string> { "batch.completed" }; // adjust to actual name once confirmed
 
-    var req = new RegisterWebhookRequest
-    {
-        Url = receiverHookUrl,
-        Secret = s,
-        Events = ev
-    };
+        var req = new RegisterWebhookRequest
+        {
+            Url = receiverHookUrl,
+            Secret = s,
+            Events = ev
+        };
 
-    var resp = await Webhooks.RegisterAsync(req);
-    WebhookId = resp.Id;
-    WebhookSecret = s; // Store the secret used for registration, as Scriptube may not return it in the response.
+        var resp = await Webhooks.RegisterAsync(req);
+        WebhookId = resp.Id;
+        WebhookSecret = s; // Store the secret used for registration, as Scriptube may not return it in the response.
     }
     public async Task CleanupAsync()
     {
-    if (string.IsNullOrWhiteSpace(WebhookId)) return;
+        if (string.IsNullOrWhiteSpace(WebhookId)) return;
 
-    try { await Webhooks.DeleteAsync(WebhookId); }
-    catch { /* ignore */ }
+        try { await Webhooks.DeleteAsync(WebhookId); }
+        catch { /* ignore */ }
     }
 }

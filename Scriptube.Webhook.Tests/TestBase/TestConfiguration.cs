@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+
 using Scriptube.Webhook.Tests.Config;
 
 namespace Scriptube.Webhook.Tests.TestBase;

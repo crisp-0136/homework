@@ -15,19 +15,19 @@ public sealed class WebhookRegistrationBuilder
 
     public RegisterWebhookRequest Build()
     {
-    var events = _events.Count == 0
+        var events = _events.Count == 0
         ? new List<string> { "batch.completed" } // default event
-        : new List<string>(_events);
+            : new List<string>(_events);
 
-    var secret = string.IsNullOrWhiteSpace(_secret) || _secret.Length < 16
+        var secret = string.IsNullOrWhiteSpace(_secret) || _secret.Length < 16
         ? "test-secret-000000" // 16+ chars
         : _secret;
 
-    return new RegisterWebhookRequest
-    {
-        Url = _url,
-        Events = events,
-        Secret = secret
-    };
+        return new RegisterWebhookRequest
+        {
+            Url = _url,
+            Events = events,
+            Secret = secret
+        };
     }
 }

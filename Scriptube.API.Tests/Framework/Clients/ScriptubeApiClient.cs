@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+
 using Scriptube.API.Tests.Framework.Config;
 
 namespace Scriptube.API.Tests.Framework.Clients;

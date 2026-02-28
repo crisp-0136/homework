@@ -1,5 +1,7 @@
 using Microsoft.Playwright;
+
 using NUnit.Framework;
+
 using Scriptube.UI.Tests.Framework.Config;
 
 namespace Scriptube.UI.Tests.Framework.Browser;
