@@ -11,7 +11,7 @@ public static class TestConfiguration
         .SetBasePath(AppContext.BaseDirectory)
         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
         .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: false)
-        .AddEnvironmentVariables()
+        .AddEnvironmentVariables(prefix: "SCRIPTUBE_")
         .Build());
 
     public static ScriptubeSettings Scriptube => Bind<ScriptubeSettings>("Api", "Secrets");
